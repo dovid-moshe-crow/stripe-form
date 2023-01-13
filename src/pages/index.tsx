@@ -1,8 +1,5 @@
 import powerlink from "../core/powerlink";
-import {
-  InferGetServerSidePropsType,
-  NextApiResponse,
-} from "next";
+import { InferGetServerSidePropsType, NextApiResponse } from "next";
 import Head from "next/head";
 import { loadStripe } from "@stripe/stripe-js";
 import { useEffect } from "react";
@@ -13,7 +10,7 @@ type Data = {
   campaign: string;
 };
 
-export const getServerSideProps = async ({res }:{res:NextApiResponse}) => {
+export const getServerSideProps = async ({ res }: { res: NextApiResponse }) => {
   const data: Data = {
     pk: process.env.STRIPE_PK,
     campaign: "177b5cd5-2a69-4933-992e-1dd3599eb77e",
@@ -30,30 +27,7 @@ function Home({
       const stripe = (await loadStripe(data.pk ?? ""))!;
       const elements = stripe.elements()!;
       const cardElement = elements.create("card", {
-        classes: {
-          base: "bg-transparent py-2 px-4 rounded-lg",
-          focus: "border-indigo-500",
-        },
         hidePostalCode: true,
-        style: {
-          base: {
-            color: "#32325d",
-            fontWeight: 500,
-            fontFamily: "Source Code Pro, Consolas, Menlo, monospace",
-            fontSize: "18px",
-            fontSmoothing: "antialiased",
-            ":-webkit-autofill": {
-              color: "#fce883",
-            },
-            "::placeholder": {
-              color: "#aab7c4",
-            },
-          },
-          invalid: {
-            color: "#fa755a",
-            iconColor: "#fa755a",
-          },
-        },
       });
       cardElement.mount("#card-element");
       const form = document.getElementById("donation-form")! as HTMLFormElement;
