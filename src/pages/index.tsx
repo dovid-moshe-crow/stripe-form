@@ -60,6 +60,7 @@ function Home({
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <form
+        dir="rtl"
         id="donation-form"
         action="/api/create-subscription"
         method="post"
@@ -166,15 +167,25 @@ function Home({
           </select>
         </div>
 
-        {/* <div className="mb-4">
-        <label className="block text-gray-700 font-medium mb-2">אנונימי</label>
-        <input
-          className="border border-gray-400 p-2 rounded-lg w-full"
-          type="checkbox"
-          name="anonymous"
-          required
-        />
-      </div> */}
+        <div className="mb-4 flex justify-start">
+          <input
+            className=" rounded-lg border border-gray-400"
+            type="checkbox"
+            name="anonymous"
+          />
+          <label className="mx-2 block font-medium text-gray-700">
+            תרומה אנונימית
+          </label>
+        </div>
+
+        
+        <div className="mb-4">
+          <label className="mb-2 block font-medium text-gray-700">הקדשה</label>
+          <textarea
+            className="w-full rounded-lg border border-gray-400 p-2 h-36"
+            name="dedication"
+          />
+        </div>
         {/* <div className="mb-4">
         <label className="block text-gray-700 font-medium mb-2">כרטיס אשראי</label>
         <div id="card-element" className="bg-gray-200 p-2 rounded-lg"></div>
@@ -183,7 +194,10 @@ function Home({
           <label className="mb-2 block font-medium text-gray-700">
             כרטיס אשראי
           </label>
-          <div className="relative overflow-hidden rounded-lg border border-gray-400">
+          <div
+            className="relative overflow-hidden rounded-lg border border-gray-400"
+            dir="ltr"
+          >
             <div className="rounded-lg bg-gray-200 py-2 px-4">
               <div className="absolute top-0 left-0 -ml-4 -mt-4">
                 <i className="fas fa-credit-card fa-2x text-indigo-500"></i>

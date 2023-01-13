@@ -6,6 +6,7 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
+  console.log(req.body);
   let { stripeToken, amount, months } = req.body;
 
   months = parseInt(months);
@@ -43,13 +44,15 @@ export default async function handler(
         amb: req.body.amb,
         campaign: req.body.campaign,
         phone: req.body.phone,
+        dedication: req.body.dedication,
+        anonymous: req.body.anonymous === "on" ? "true" : "false",
       },
       cancel_at: Math.floor(cancel_at.getTime() / 1000),
       expand: ["latest_invoice.payment_intent"],
     });
 
-    return res.redirect(302,"/success");
+    return res.redirect(302, "/success");
   } catch (err: any) {
-    return res.redirect(302,`/error?message=${err.raw.message}`);
+    return res.redirect(302, `/error?message=${err.raw.message}`);
   }
 }
