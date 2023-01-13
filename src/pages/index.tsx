@@ -3,7 +3,6 @@ import powerlink from "../core/powerlink";
 import {
   InferGetServerSidePropsType,
   NextApiResponse,
-  type NextPage,
 } from "next";
 import Head from "next/head";
 import Link from "next/link";
