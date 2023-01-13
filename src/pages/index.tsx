@@ -4,7 +4,6 @@ import {
   NextApiResponse,
 } from "next";
 import Head from "next/head";
-import Link from "next/link";
 import { loadStripe } from "@stripe/stripe-js";
 import { useEffect } from "react";
 
