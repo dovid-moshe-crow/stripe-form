@@ -1,4 +1,3 @@
-import styles from "./index.module.css";
 import powerlink from "../core/powerlink";
 import {
   InferGetServerSidePropsType,
