@@ -1,7 +1,6 @@
 import styles from "./index.module.css";
 import powerlink from "../core/powerlink";
 import {
-  GetServerSideProps,
   InferGetServerSidePropsType,
   NextApiResponse,
   type NextPage,
