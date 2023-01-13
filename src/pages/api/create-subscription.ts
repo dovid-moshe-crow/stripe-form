@@ -48,8 +48,8 @@ export default async function handler(
       expand: ["latest_invoice.payment_intent"],
     });
 
-    return res.redirect("/success");
+    return res.redirect(302,"/success");
   } catch (err: any) {
-    return res.redirect(`/error?message=${err.raw.message}`);
+    return res.redirect(302,`/error?message=${err.raw.message}`);
   }
 }
