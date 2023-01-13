@@ -7,8 +7,8 @@ let lastRequestTime = 0;
 export default async function powerlink(
   id: string
 ): Promise<Array<{ name: string; id: string }>> {
-  if (id === lastId && (Date.now() - lastRequestTime) < (3 * 60 * 1000)) {
-    console.log("cached")
+  if (id === lastId && Date.now() - lastRequestTime < 3 * 60 * 1000) {
+    console.log("cached");
     return lastResult;
   }
   try {
@@ -29,12 +29,14 @@ export default async function powerlink(
     );
 
     lastId = id;
-    lastResult = result.data["data"]["Data"].map((x: Record<string, string>) => {
-      return {
-        name: x["pcfsystemfield333"],
-        id: x["pcfsystemfield326"],
-      };
-    });
+    lastResult = result.data["data"]["Data"].map(
+      (x: Record<string, string>) => {
+        return {
+          name: x["pcfsystemfield333"],
+          id: x["pcfsystemfield326"],
+        };
+      }
+    );
     lastRequestTime = Date.now();
     return lastResult;
   } catch {
