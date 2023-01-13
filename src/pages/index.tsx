@@ -118,53 +118,62 @@ function Home({
 
         <div className="mb-4">
           <label className="mb-2 block font-medium text-gray-700">סכום</label>
-          <input
-            className="w-full rounded-lg border border-gray-400 p-2"
-            type="number"
-            name="amount"
-            min={1}
-            placeholder="כתוב את הסכום של התרומה"
-            required
-          />
+          <div className="flex">
+            <input
+              className="w-full rounded-r-lg border border-gray-400 p-2"
+              type="number"
+              name="amount"
+              min={1}
+              placeholder="כתוב את הסכום של התרומה"
+              required
+            />
+
+            <div className="flex items-center justify-center rounded-l-lg border border-r-0 border-gray-400  bg-gray-400 px-3 text-lg text-white">
+              $
+            </div>
+          </div>
         </div>
 
         <div className="mb-4">
           <label className="mb-2 block font-medium text-gray-700">
             מספר תרומות
           </label>
-          <select
-            className="w-full rounded-lg border border-gray-400 p-2"
-            name="months"
-            id="contributions"
-            required
-          >
-            <option value="1" selected>
-              1
-            </option>
-            <option value="2">2</option>
-            <option value="3">3</option>
-            <option value="4">4</option>
-            <option value="5">5</option>
-            <option value="6">6</option>
-            <option value="7">7</option>
-            <option value="8">8</option>
-            <option value="9">9</option>
-            <option value="10">10</option>
-            <option value="11">11</option>
-            <option value="12">12</option>
-            <option value="13">13</option>
-            <option value="14">14</option>
-            <option value="15">15</option>
-            <option value="16">16</option>
-            <option value="17">17</option>
-            <option value="18">18</option>
-            <option value="19">19</option>
-            <option value="20">20</option>
-            <option value="21">21</option>
-            <option value="22">22</option>
-            <option value="23">23</option>
-            <option value="24">24</option>
-          </select>
+
+          <div className="flex">
+            <select
+              className="w-full rounded-lg border border-gray-400 p-2"
+              name="months"
+              id="contributions"
+              required
+            >
+              <option value="1" selected>
+                1
+              </option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+              <option value="6">6</option>
+              <option value="7">7</option>
+              <option value="8">8</option>
+              <option value="9">9</option>
+              <option value="10">10</option>
+              <option value="11">11</option>
+              <option value="12">12</option>
+              <option value="13">13</option>
+              <option value="14">14</option>
+              <option value="15">15</option>
+              <option value="16">16</option>
+              <option value="17">17</option>
+              <option value="18">18</option>
+              <option value="19">19</option>
+              <option value="20">20</option>
+              <option value="21">21</option>
+              <option value="22">22</option>
+              <option value="23">23</option>
+              <option value="24">24</option>
+            </select>
+          </div>
         </div>
 
         <div className="mb-4 flex justify-start">
@@ -178,11 +187,10 @@ function Home({
           </label>
         </div>
 
-        
         <div className="mb-4">
           <label className="mb-2 block font-medium text-gray-700">הקדשה</label>
           <textarea
-            className="w-full rounded-lg border border-gray-400 p-2 h-36"
+            className="h-36 w-full rounded-lg border border-gray-400 p-2"
             name="dedication"
           />
         </div>
