@@ -17,7 +17,7 @@ export default async function powerlink(
       {
         objecttype: "1020",
         sort_type: "desc",
-        fields: "pcfsystemfield333,pcfsystemfield326",
+        fields: "pcfsystemfield333,pcfsystemfield326,customobject1020id",
         query: `(pcfsystemfield326 = ${id})`,
       },
       {
@@ -33,7 +33,7 @@ export default async function powerlink(
       (x: Record<string, string>) => {
         return {
           name: x["pcfsystemfield333"],
-          id: x["pcfsystemfield326"],
+          id: x["customobject1020id"],
         };
       }
     );

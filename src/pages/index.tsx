@@ -99,6 +99,7 @@ function Home({
             className="w-full rounded-lg border border-gray-400 p-2"
             name="amb"
           >
+            <option value={""}></option>
             {data?.ambs?.map((x) => (
               <option key={x.id} value={x.id}>
                 {x.name}
