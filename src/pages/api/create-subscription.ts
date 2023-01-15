@@ -21,7 +21,27 @@ export default async function handler(
   try {
     const customer = await stripe.customers.create({
       source: stripeToken,
+      name: req.body.name,
+      email: req.body.email,
+      phone: req.body.phone,
+      metadata: {
+        full_name: req.body.full_name,
+        email: req.body.email,
+        amb: req.body.amb,
+        campaign: req.body.campaign,
+        phone: req.body.phone,
+        dedication: req.body.dedication,
+        anonymous: req.body.anonymous === "on" ? "true" : "false",
+        months: months,
+      },
     });
+
+    // const intent = await stripe.paymentIntents.create({
+    //   customer: customer.id,
+    //   amount: amount * 100,
+    //   currency: "usd",
+    //   payment_method_types: ["card"],
+    // });
 
     const plan = await stripe.plans.create({
       amount: amount * 100,
@@ -37,7 +57,12 @@ export default async function handler(
 
     const subscription = await stripe.subscriptions.create({
       customer: customer.id,
-      items: [{ plan: plan.id, quantity: 1 }],
+      items: [
+        {
+          plan: plan.id,
+          quantity: 1,
+        },
+      ],
       metadata: {
         full_name: req.body.full_name,
         email: req.body.email,
@@ -46,9 +71,10 @@ export default async function handler(
         phone: req.body.phone,
         dedication: req.body.dedication,
         anonymous: req.body.anonymous === "on" ? "true" : "false",
+        months: months,
       },
-      cancel_at: Math.floor(cancel_at.getTime() / 1000),
       expand: ["latest_invoice.payment_intent"],
+      cancel_at: Math.floor(cancel_at.getTime() / 1000),
     });
 
     return res.redirect(302, "/success");
