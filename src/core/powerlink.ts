@@ -25,6 +25,7 @@ export default async function powerlink(
           "Content-type": "application/json",
           tokenId: process.env.POWERLINK_TOKEN_ID,
         },
+        timeout: 4000,
       }
     );
 
