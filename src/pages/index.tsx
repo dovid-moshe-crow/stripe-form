@@ -78,7 +78,7 @@ function Home({
         <div className="mb-4">
           <label className="mb-2 block font-medium text-gray-700">שגריר</label>
           <Select
-            options={data.ambs}
+            options={data.ambs as any}
             defaultValue=""
             className="w-full rounded-lg"
             name="amb"
