@@ -11,6 +11,7 @@ function Success() {
       <p className="mb-8 text-lg">amount: {amount}$</p>
       <p className="mb-8 text-lg">months: {montes}</p>
       <a
+        target="_top"
         href="/"
         className="rounded-lg bg-white px-4 py-2 text-green-500 hover:bg-green-500 hover:text-white"
       >
