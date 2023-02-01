@@ -3,18 +3,25 @@ import { InferGetServerSidePropsType, NextApiResponse } from "next";
 import Head from "next/head";
 import { loadStripe } from "@stripe/stripe-js";
 import { useEffect } from "react";
+import Select from "react-select";
 
 type Data = {
   pk: string | undefined;
-  ambs: Array<{ name: string; id: string }>;
+  ambs: Array<{ value: string; label: string }>;
   campaign: string;
 };
 
-export const getServerSideProps = async ({ res }: { res: NextApiResponse }) => {
+export const getServerSideProps = async ({
+  res,
+  query,
+}: {
+  res: NextApiResponse;
+  query: Record<string, string>;
+}) => {
   const data: Data = {
     pk: process.env.STRIPE_PK,
     campaign: "177b5cd5-2a69-4933-992e-1dd3599eb77e",
-    ambs: await powerlink("177b5cd5-2a69-4933-992e-1dd3599eb77e"),
+    ambs: await powerlink(query.id ?? "177b5cd5-2a69-4933-992e-1dd3599eb77e"),
   };
   return { props: { data } };
 };
@@ -70,22 +77,20 @@ function Home({
         <input type="hidden" name="campaign" value={data.campaign} />
         <div className="mb-4">
           <label className="mb-2 block font-medium text-gray-700">שגריר</label>
-          <select
-            className="w-full rounded-lg border border-gray-400 p-2"
+          <Select
+            options={data.ambs}
+            defaultValue=""
+            className="w-full rounded-lg"
             name="amb"
-          >
-            <option value={""}></option>
-            {data?.ambs?.map((x) => (
-              <option key={x.id} value={x.id}>
-                {x.name}
-              </option>
-            ))}
-          </select>
+          />
         </div>
 
         <div className="mb-4">
-          <label className="mb-2 block font-medium text-gray-700">שם מלא</label>
+          <label className="mb-2 block font-medium text-gray-700">
+            שם מלא (חובה)
+          </label>
           <input
+            required
             className="w-full rounded-lg border border-gray-400 p-2"
             type="text"
             name="full_name"
