@@ -1,14 +1,15 @@
-import powerlink from "../core/powerlink";
+import { powerlink } from "../core/powerlink";
 import { InferGetServerSidePropsType, NextApiResponse } from "next";
 import Head from "next/head";
 import { loadStripe } from "@stripe/stripe-js";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Select from "react-select";
 
 type Data = {
   pk: string | undefined;
   ambs: Array<{ value: string; label: string }>;
   campaign: string;
+  amb: string | null;
 };
 
 export const getServerSideProps = async ({
@@ -19,9 +20,13 @@ export const getServerSideProps = async ({
   query: Record<string, string>;
 }) => {
   const data: Data = {
+    amb: query.amb ?? null,
     pk: process.env.STRIPE_PK,
-    campaign: "177b5cd5-2a69-4933-992e-1dd3599eb77e",
-    ambs: await powerlink(query.id ?? "177b5cd5-2a69-4933-992e-1dd3599eb77e"),
+    campaign: query.id ?? "177b5cd5-2a69-4933-992e-1dd3599eb77e",
+    ambs: await powerlink(
+      query.id ?? "177b5cd5-2a69-4933-992e-1dd3599eb77e",
+      query.amb
+    ),
   };
   return { props: { data } };
 };
@@ -31,7 +36,7 @@ function Home({
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   useEffect(() => {
     (async () => {
-      const stripe = (await loadStripe(data.pk ?? ""))!;
+      const stripe = (await loadStripe(data.pk!))!;
       const elements = stripe.elements()!;
       const cardElement = elements.create("card", {
         hidePostalCode: true,
@@ -59,6 +64,8 @@ function Home({
     })();
   }, []);
 
+  const [multiSub, setMultiSub] = useState(false);
+
   return (
     <>
       <Head>
@@ -77,17 +84,28 @@ function Home({
         <input type="hidden" name="campaign" value={data.campaign} />
         <div className="mb-4">
           <label className="mb-2 block font-medium text-gray-700">שגריר</label>
-          <Select
-            options={data.ambs as any}
-            defaultValue=""
-            className="w-full rounded-lg"
-            name="amb"
-          />
+          {data.amb ? (
+            <>
+              <input
+                value={data.ambs[0]?.label}
+                readOnly
+                className="w-full rounded-lg border border-gray-400 p-2"
+              />
+              <input name="amb" value={data.ambs[0]?.value} hidden readOnly />
+            </>
+          ) : (
+            <Select
+              options={data.ambs as any}
+              defaultValue=""
+              className="w-full rounded-lg"
+              name="amb"
+            />
+          )}
         </div>
 
         <div className="mb-4">
           <label className="mb-2 block font-medium text-gray-700">
-            שם מלא (חובה)
+            שם מלא <span className="text-red-700">*</span>
           </label>
           <input
             required
@@ -139,7 +157,20 @@ function Home({
           </div>
         </div>
 
-        <div className="mb-4">
+        <div className="mb-4 flex justify-start">
+          <input
+            className=" rounded-lg border border-gray-400"
+            type="checkbox"
+            name="multiSub"
+            checked={multiSub}
+            onChange={() => setMultiSub((prev) => !prev)}
+          />
+          <label className="mx-2 block font-medium text-gray-700">
+            תרומה חוזרת
+          </label>
+        </div>
+
+        <div className="mb-4" hidden={!multiSub}>
           <label className="mb-2 block font-medium text-gray-700">
             מספר תרומות
           </label>
@@ -151,9 +182,8 @@ function Home({
               id="contributions"
               required
             >
-              <option value="1" selected>
-                1
-              </option>
+              <option value="no limit">ללא הגבלה</option>
+              <option value="1">1</option>
               <option value="2">2</option>
               <option value="3">3</option>
               <option value="4">4</option>
@@ -164,7 +194,9 @@ function Home({
               <option value="9">9</option>
               <option value="10">10</option>
               <option value="11">11</option>
-              <option value="12">12</option>
+              <option value="12" selected>
+                12
+              </option>
               <option value="13">13</option>
               <option value="14">14</option>
               <option value="15">15</option>

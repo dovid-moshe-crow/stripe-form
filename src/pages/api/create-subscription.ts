@@ -22,13 +22,23 @@ export default async function handler(
   console.log(req.body);
   let { stripeToken, amount, months } = req.body;
 
-  months = parseInt(months);
+  // calculate months
+  console.log(req.body);
+  console.log(months);
 
-  if (isNaN(months) || months < 1 || months > 24) {
-    return res.json({
-      success: false,
-      message: "monthes out of range",
-    });
+  let months_num = null;
+  if (req.body.multiSub != "on") {
+    months_num = 1;
+  } else if (months == "no limit") {
+  } else {
+    if (isNaN(months) || months < 1 || months > 24) {
+      return res.json({
+        success: false,
+        message: "monthes out of range",
+      });
+    }
+
+    months_num = parseInt(months);
   }
 
   try {
@@ -45,7 +55,7 @@ export default async function handler(
         phone: req.body.phone,
         dedication: req.body.dedication,
         anonymous: req.body.anonymous === "on" ? "true" : "false",
-        months: months,
+        months: months_num,
       },
     });
 
@@ -65,8 +75,12 @@ export default async function handler(
       },
     });
 
-    const cancel_at = new Date();
-    cancel_at.setMonth(cancel_at.getMonth() + months);
+    let cancel_at;
+    if (months_num) {
+      const cancel_at_date = new Date();
+      cancel_at_date.setMonth(cancel_at_date.getMonth() + months_num);
+      cancel_at = Math.floor(cancel_at_date.getTime() / 1000);
+    }
 
     const subscription = await stripe.subscriptions.create({
       customer: customer.id,
@@ -84,20 +98,19 @@ export default async function handler(
         phone: req.body.phone,
         dedication: req.body.dedication,
         anonymous: req.body.anonymous === "on" ? "true" : "false",
-        months: months,
+        months: months_num,
       },
       expand: ["latest_invoice.payment_intent"],
-      cancel_at: Math.floor(cancel_at.getTime() / 1000),
+      cancel_at,
     });
+
+    console.log("hi");
 
     return res.redirect(
       302,
-      `/success?months=${differenceInMonths(
-        new Date(subscription.cancel_at! * 1000),
-        new Date(subscription.start_date * 1000)
-      )}&amount=${
+      `/success?months=${months_num}&amount=${
         (subscription.latest_invoice as any).payment_intent.amount / 100
-      }`
+      }&name=${encodeURIComponent(req.body.full_name)}`
     );
   } catch (err: any) {
     logError(err);

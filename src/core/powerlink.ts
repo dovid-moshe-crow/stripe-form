@@ -1,24 +1,36 @@
 import axios from "axios";
 
 let lastId = "";
+let lastAmbs: string | undefined = "";
 let lastResult: Array<{ value: string; label: string }> = [];
 let lastRequestTime = 0;
 
-export default async function powerlink(
-  id: string
+export async function powerlink(
+  campaignId: string,
+  ambsId?: string
 ): Promise<Array<{ value: string; label: string }>> {
-  if (id === lastId && Date.now() - lastRequestTime < 3 * 60 * 1000) {
+  if (
+    campaignId === lastId &&
+    ambsId == lastAmbs &&
+    Date.now() - lastRequestTime < 3 * 60 * 1000
+  ) {
     console.log("cached");
     return lastResult;
   }
   try {
+
+    console.log(`(pcfsystemfield326 = ${campaignId})${
+      ambsId ? " and \n(customobject1020id = " + ambsId : ")"
+    })`)
     const result = await axios.post(
       "https://api.powerlink.co.il/api/query",
       {
         objecttype: "1020",
         sort_type: "desc",
         fields: "pcfsystemfield333,pcfsystemfield326,customobject1020id",
-        query: `(pcfsystemfield326 = ${id})`,
+        query: `(pcfsystemfield326 = ${campaignId})${
+          ambsId ? " AND (customobject1020id = " + ambsId : ")"
+        })`,
       },
       {
         headers: {
@@ -29,7 +41,10 @@ export default async function powerlink(
       }
     );
 
-    lastId = id;
+    console.log(result.data.data.Data);
+
+    lastId = campaignId;
+    lastAmbs = ambsId;
     lastResult = result.data["data"]["Data"].map(
       (x: Record<string, string>) => {
         return {
