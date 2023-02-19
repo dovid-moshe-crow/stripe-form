@@ -1,7 +1,6 @@
 import { powerlink } from "../core/powerlink";
 import { InferGetServerSidePropsType, NextApiResponse } from "next";
 import Head from "next/head";
-import { loadStripe } from "@stripe/stripe-js";
 import { useEffect, useState } from "react";
 import Select from "react-select";
 
@@ -34,36 +33,6 @@ export const getServerSideProps = async ({
 function Home({
   data,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
-  useEffect(() => {
-    (async () => {
-      const stripe = (await loadStripe(data.pk!))!;
-      const elements = stripe.elements()!;
-      const cardElement = elements.create("card", {
-        hidePostalCode: true,
-      });
-      cardElement.mount("#card-element");
-      const form = document.getElementById("donation-form")! as HTMLFormElement;
-
-      form.addEventListener("submit", function (event) {
-        event.preventDefault();
-
-        stripe.createToken(cardElement).then(function (result) {
-          if (result.error) {
-            console.log(result.error.message);
-          } else {
-            var hiddenInput = document.createElement("input");
-            hiddenInput.setAttribute("type", "hidden");
-            hiddenInput.setAttribute("name", "stripeToken");
-            hiddenInput.setAttribute("value", result.token.id);
-            form.appendChild(hiddenInput);
-
-            form.submit();
-          }
-        });
-      });
-    })();
-  }, []);
-
   const [multiSub, setMultiSub] = useState(false);
 
   return (
@@ -76,7 +45,7 @@ function Home({
       <form
         dir="rtl"
         id="donation-form"
-        action="/api/create-subscription"
+        action="/api/create-session"
         method="post"
         className="rounded-lg bg-white p-6"
       >
@@ -140,6 +109,26 @@ function Home({
         </div>
 
         <div className="mb-4">
+          <label className="mb-2 block font-medium text-gray-700">כתובת</label>
+          <input
+            className="w-full rounded-lg border border-gray-400 p-2"
+            type="text"
+            name="address"
+            placeholder=""
+          />
+        </div>
+
+        <div className="mb-4">
+          <label className="mb-2 block font-medium text-gray-700">עיר</label>
+          <input
+            className="w-full rounded-lg border border-gray-400 p-2"
+            type="text"
+            name="city"
+            placeholder=""
+          />
+        </div>
+
+        <div className="mb-4">
           <label className="mb-2 block font-medium text-gray-700">סכום</label>
           <div className="flex">
             <input
@@ -170,48 +159,32 @@ function Home({
           </label>
         </div>
 
-        <div className="mb-4" hidden={!multiSub}>
-          <label className="mb-2 block font-medium text-gray-700">
-            מספר תרומות
-          </label>
+        {multiSub ? (
+          <div className="mb-4">
+            <label className="mb-2 block font-medium text-gray-700">
+              מספר תרומות
+            </label>
 
-          <div className="flex">
-            <select
-              className="w-full rounded-lg border border-gray-400 p-2"
-              name="months"
-              id="contributions"
-              required
-            >
-              <option value="no limit">ללא הגבלה</option>
-              <option value="1">1</option>
-              <option value="2">2</option>
-              <option value="3">3</option>
-              <option value="4">4</option>
-              <option value="5">5</option>
-              <option value="6">6</option>
-              <option value="7">7</option>
-              <option value="8">8</option>
-              <option value="9">9</option>
-              <option value="10">10</option>
-              <option value="11">11</option>
-              <option value="12" selected>
-                12
-              </option>
-              <option value="13">13</option>
-              <option value="14">14</option>
-              <option value="15">15</option>
-              <option value="16">16</option>
-              <option value="17">17</option>
-              <option value="18">18</option>
-              <option value="19">19</option>
-              <option value="20">20</option>
-              <option value="21">21</option>
-              <option value="22">22</option>
-              <option value="23">23</option>
-              <option value="24">24</option>
-            </select>
+            <div className="flex">
+              <select
+                className="w-full rounded-lg border border-gray-400 p-2"
+                name="months"
+                id="contributions"
+                required
+                defaultValue={12}
+              >
+                {/* <option value="no limit">ללא הגבלה</option> */}
+                {new Array(24).fill(0).map((_, i) => (
+                  <option value={i + 1} key={i + 1}>
+                    {i + 1}
+                  </option>
+                ))}
+              </select>
+            </div>
           </div>
-        </div>
+        ) : (
+          <input type="hidden" value={1} />
+        )}
 
         <div className="mb-4 flex justify-start">
           <input
@@ -230,26 +203,6 @@ function Home({
             className="h-36 w-full rounded-lg border border-gray-400 p-2"
             name="dedication"
           />
-        </div>
-        {/* <div className="mb-4">
-        <label className="block text-gray-700 font-medium mb-2">כרטיס אשראי</label>
-        <div id="card-element" className="bg-gray-200 p-2 rounded-lg"></div>
-      </div>  */}
-        <div className="mb-4">
-          <label className="mb-2 block font-medium text-gray-700">
-            כרטיס אשראי
-          </label>
-          <div
-            className="relative overflow-hidden rounded-lg border border-gray-400"
-            dir="ltr"
-          >
-            <div className="rounded-lg bg-gray-200 py-2 px-4">
-              <div className="absolute top-0 left-0 -ml-4 -mt-4">
-                <i className="fas fa-credit-card fa-2x text-indigo-500"></i>
-              </div>
-              <div id="card-element" className="text-gray-600"></div>
-            </div>
-          </div>
         </div>
 
         <button className="w-full rounded-lg bg-indigo-500 py-2 px-4 text-white hover:bg-indigo-600">
