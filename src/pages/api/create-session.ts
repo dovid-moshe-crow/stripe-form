@@ -15,6 +15,7 @@ export default async function handler(
           price_data: {
             product_data: {
               name: `donation-${req.body.amount}`,
+              metadata: req.body,
             },
             currency: "usd",
             recurring: { interval: "month" },
