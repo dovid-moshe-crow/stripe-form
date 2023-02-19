@@ -22,8 +22,7 @@ export default async function handler(
           },
         },
       ],
-      success_url:
-        "http://localhost:3000/api/handle-subscription?session_id={CHECKOUT_SESSION_ID}",
+      success_url: `${process.env.NEXT_PUBLIC_URL}/api/completed?session_id={CHECKOUT_SESSION_ID}`,
 
       mode: "subscription",
     });

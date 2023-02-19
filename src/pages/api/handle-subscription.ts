@@ -6,9 +6,12 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  const session = await stripe.checkout.sessions.retrieve(
-    req.query.session_id as any
-  );
+  res.send({});
+
+  const session = req.body.data.object;
+  if (!session.metadata.months) {
+    return; 
+  }
   const months = parseInt(session.metadata?.months ?? "1");
 
   const cancel_at_date = new Date();
@@ -18,11 +21,4 @@ export default async function handler(
   await stripe.subscriptions.update(session.subscription as any, {
     cancel_at,
   });
-
-  return res.redirect(
-    302,
-    `/success?months=${months}&amount=${
-      session.metadata?.amount
-    }&name=${encodeURIComponent(session.metadata?.full_name ?? "")}`
-  );
 }
