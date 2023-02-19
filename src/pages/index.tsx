@@ -183,7 +183,7 @@ function Home({
             </div>
           </div>
         ) : (
-          <input type="hidden" value={1} />
+          <input type="hidden" name="months" value={1} />
         )}
 
         <div className="mb-4 flex justify-start">

@@ -7,18 +7,22 @@ export default async function handler(
   res: NextApiResponse
 ) {
   res.send({});
+  try {
+    const session = req.body.data.object;
+    if (!session.metadata.months) {
+      return;
+    }
+    const months = parseInt(session.metadata?.months ?? "1");
 
-  const session = req.body.data.object;
-  if (!session.metadata.months) {
-    return; 
+    const cancel_at_date = new Date();
+    cancel_at_date.setMonth(cancel_at_date.getMonth() + months);
+    const cancel_at = Math.floor(cancel_at_date.getTime() / 1000);
+
+    await stripe.subscriptions.update(session.subscription as any, {
+      cancel_at,
+    });
+   
+  } catch {
+    
   }
-  const months = parseInt(session.metadata?.months ?? "1");
-
-  const cancel_at_date = new Date();
-  cancel_at_date.setMonth(cancel_at_date.getMonth() + months);
-  const cancel_at = Math.floor(cancel_at_date.getTime() / 1000);
-
-  await stripe.subscriptions.update(session.subscription as any, {
-    cancel_at,
-  });
 }
