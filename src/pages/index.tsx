@@ -173,7 +173,7 @@ function Home({
                 required
                 defaultValue={12}
               >
-                {/* <option value="no limit">ללא הגבלה</option> */}
+                <option value={0}>ללא הגבלה</option>
                 {new Array(24).fill(0).map((_, i) => (
                   <option value={i + 1} key={i + 1}>
                     {i + 1}

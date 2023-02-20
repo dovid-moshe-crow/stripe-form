@@ -10,8 +10,6 @@
   },
   "dependencies": {
     "@googleapis/sheets": "^4.0.1",
-    "@stripe/react-stripe-js": "^1.16.3",
-    "@stripe/stripe-js": "^1.46.0",
     "axios": "^1.2.2",
     "google-auth-library": "^8.7.0",
     "googleapis": "^110.0.0",

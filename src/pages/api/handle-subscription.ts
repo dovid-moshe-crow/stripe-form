@@ -9,10 +9,15 @@ export default async function handler(
   res.send({});
   try {
     const session = req.body.data.object;
-    if (!session.metadata.months) {
+    if (!session.metadata.months || session.metadata.months == 1) {
       return;
     }
     const months = parseInt(session.metadata?.months ?? "1");
+
+    if (months == 0) {
+      // no limit
+      return;
+    }
 
     const cancel_at_date = new Date();
     cancel_at_date.setMonth(cancel_at_date.getMonth() + months);
@@ -21,8 +26,5 @@ export default async function handler(
     await stripe.subscriptions.update(session.subscription as any, {
       cancel_at,
     });
-   
-  } catch {
-    
-  }
+  } catch {}
 }

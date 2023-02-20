@@ -7,26 +7,30 @@ export default async function handler(
   res: NextApiResponse
 ) {
   try {
+    const amount = parseInt(req.body.amount);
+    const months = parseInt(req.body.months);
+    const metadata = req.body;
+
     const session = await stripe.checkout.sessions.create({
-      metadata: req.body,
       line_items: [
         {
           quantity: 1,
           price_data: {
             product_data: {
-              name: `donation of ${req.body.amount}$ for ${req.body.months} months`,
-              metadata: req.body,
+              name: getProductName(amount, months),
+              metadata,
             },
-            
+
             currency: "usd",
-            recurring: { interval: "month" },
-            unit_amount: parseInt(req.body.amount) * 100,
+            recurring: months == 1 ? undefined : { interval: "month" },
+            unit_amount: amount * 100,
           },
         },
       ],
       success_url: `${process.env.NEXT_PUBLIC_URL}/api/completed?session_id={CHECKOUT_SESSION_ID}`,
 
-      mode: "subscription",
+      mode: months == 1 ? "payment" : "subscription",
+      metadata,
     });
 
     res.redirect(302, session.url!);
@@ -36,3 +40,9 @@ export default async function handler(
     return res.redirect(302, `/error?message=${encodeURIComponent(message)}`);
   }
 }
+
+const getProductName = (amount: number, months: number) => {
+  if (months == 0) return `${amount} dolars a month`;
+  if (months == 1) return `${amount} dolar donation`;
+  else return `${months} monthes`;
+};
