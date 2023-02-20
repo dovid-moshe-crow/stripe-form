@@ -14,7 +14,7 @@ export default async function handler(
           quantity: 1,
           price_data: {
             product_data: {
-              name: `donation-${req.body.amount}`,
+              name: `donation of ${req.body.amount}$ for ${req.body.months} months`,
               metadata: req.body,
             },
             
