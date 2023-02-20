@@ -9,13 +9,16 @@ export default async function handler(
   try {
     const session = await stripe.checkout.sessions.create({
       metadata: req.body,
+      payment_intent_data: {
+        metadata: req.body,
+      },
       line_items: [
         {
           quantity: 1,
           price_data: {
             product_data: {
               name: `donation-${req.body.amount}`,
-              metadata: req.body,
+              // metadata: req.body,
             },
             currency: "usd",
             recurring: { interval: "month" },
