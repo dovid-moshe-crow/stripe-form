@@ -13,6 +13,7 @@ export default async function handler(
     const metadata = req.body;
 
     const session = await stripe.checkout.sessions.create({
+      customer_creation: "always",
       line_items: [
         {
           quantity: 1,
@@ -21,6 +22,7 @@ export default async function handler(
               name: getProductName(amount, months),
               metadata,
             },
+
 
             currency: "usd",
             recurring: months == 1 ? undefined : { interval: "month" },
