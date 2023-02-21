@@ -6,14 +6,26 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  console.log(req.body)
+  console.log(req.body);
   try {
     const amount = parseInt(req.body.amount);
     const months = parseInt(req.body.months);
     const metadata = req.body;
 
     const session = await stripe.checkout.sessions.create({
-      customer_creation: "always",
+      customer_creation: months == 1 ? "always" : undefined,
+      payment_intent_data:
+        months == 1
+          ? {
+              metadata,
+            }
+          : undefined,
+      subscription_data:
+        months == 1
+          ? undefined
+          : {
+              metadata,
+            },
       line_items: [
         {
           quantity: 1,
@@ -22,8 +34,6 @@ export default async function handler(
               name: getProductName(amount, months),
               metadata,
             },
-
-
             currency: "usd",
             recurring: months == 1 ? undefined : { interval: "month" },
             unit_amount: amount * 100,
@@ -31,7 +41,6 @@ export default async function handler(
         },
       ],
       success_url: `${process.env.NEXT_PUBLIC_URL}/api/completed?session_id={CHECKOUT_SESSION_ID}`,
-
       mode: months == 1 ? "payment" : "subscription",
       metadata,
     });

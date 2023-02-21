@@ -91,7 +91,9 @@ function Home({
 
           {multiSub ? (
             <Select
+              name="months"
               label="מספר תרומות"
+              defaultValue="12"
               data={[
                 { value: "0", label: "ללא הגבלה" },
                 ...new Array(24)
