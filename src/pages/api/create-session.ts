@@ -6,6 +6,7 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
+  console.log(req.body)
   try {
     const amount = parseInt(req.body.amount);
     const months = parseInt(req.body.months);
