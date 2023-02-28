@@ -11,10 +11,12 @@ export default async function handler(
   );
   const months = parseInt(session.metadata?.months ?? "1");
 
-  return res.redirect(
-    302,
-    `/success?months=${months}&amount=${
-      session.metadata?.amount
-    }&name=${encodeURIComponent(session.metadata?.full_name ?? "")}`
-  );
+  return res.redirect(302, `https://yeshivatcy.co.il/`);
+
+  // return res.redirect(
+  //   302,
+  //   `/success?months=${months}&amount=${
+  //     session.metadata?.amount
+  //   }&name=${encodeURIComponent(session.metadata?.full_name ?? "")}`
+  // );
 }
