@@ -2,7 +2,7 @@ import { powerlink } from "../core/powerlink";
 import { InferGetServerSidePropsType, NextApiResponse } from "next";
 import Head from "next/head";
 import { useEffect, useState } from "react";
-//import Select from "react-select";
+
 import {
   Select,
   TextInput,
@@ -52,6 +52,7 @@ function Home({
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const [multiSub, setMultiSub] = useState(false);
 
+
   return (
     <>
       <Head>
@@ -85,6 +86,7 @@ function Home({
           <CurrencyInput name="amount" label="סכום" />
           <Checkbox
             label="תרומה חוזרת"
+            defaultChecked={multiSub}
             checked={multiSub}
             onChange={() => setMultiSub((prev) => !prev)}
           />
